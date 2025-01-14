@@ -1,0 +1,68 @@
+.model small
+.stack 100h
+.data
+x db 'Enter The Binary Number:$'
+y db  0Dh,0Ah,'The Output in Reverse is:$'
+.code
+
+
+main proc
+      mov ax,@data
+      mov ds,ax
+      
+      mov ah,9
+      lea dx,x
+      int 21h 
+      
+      mov ah,1
+      xor bx,bx
+      int 21h
+        
+   
+    while:
+      cmp al,0DH
+      JE end_while
+      AND Al,0Fh
+      SHL BX,1
+      OR BL,AL
+      int 21h
+      jmp while
+                                  
+    end_while:              
+      mov ah,9
+      lea dx,y
+      int 21h
+          
+      xor ax,ax
+      mov cx,8
+     
+     
+    reverse:
+      shl bl,1
+      rcr al,1
+      loop reverse
+      mov bl,al 
+      
+      mov cx,8
+      mov ah,2 
+        
+    
+    output:
+      rol bl,1
+      jc one
+      mov dl,'0'
+      int 21h
+      jmp drop
+          
+    one:
+      mov dl,'1'
+      int 21h
+    drop:
+      loop output
+                      
+   
+    exit:
+    mov ah,4ch
+    int 21h
+    main endp
+end main
